@@ -59,7 +59,7 @@ public class FormatListSourceGenerator : ISourceGenerator
         }
 
         src.AppendLine(
-"""
+            """
                 };
             }
             """);
