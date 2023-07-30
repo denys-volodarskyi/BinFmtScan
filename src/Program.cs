@@ -1,4 +1,7 @@
-﻿using BinFmtScan;
+﻿using System.Globalization;
+using System.Text;
+
+using BinFmtScan;
 
 internal class Program
 {
@@ -47,32 +50,40 @@ internal class Program
 
     private static void Scan(BinarySource src, string out_dir, bool extract = false)
     {
+        if (FormatList.All.Count == 0)
+            return;
+
         int count = 0;
 
         while (src.Position < src.Length)
         {
             var pos = src.Position;
-            FoundInfo? fmt = null;
 
-            IDetector? det = null;
-            FindAnyFormat(src, ref fmt, ref det);
+            FindAnyFormat(src, out object? found);
 
-            if (fmt != null)
+            if (found != null)
             {
                 count++;
 
-                if (det != null && fmt.HasSize)
+                if (found is IFoundRange range)
                 {
                     if (extract)
                     {
+                        var fn = Path.Combine(out_dir, $"{range.StartPosition:X}");
+
+                        if (range is IHasFileExtension withext)
+                            fn += withext.Extension;
+
                         Directory.CreateDirectory(out_dir);
-                        var fn = Path.Combine(out_dir, $"{fmt.StartPosition:X}{det.Extension}");
-                        src.Dump(fmt.StartPosition, fmt.Size, fn);
+                        src.Dump(range.StartPosition, range.Size, fn);
                     }
                 }
             }
 
-            src.Position = fmt != null && fmt.HasSize ? pos + fmt.Size : pos + 1;
+            if (found is IFoundRange r)
+                src.Position = pos + r.Size;
+            else
+                src.Position = pos + 1;
         }
 
 
@@ -80,32 +91,72 @@ internal class Program
             Console.WriteLine("Nothing found");
     }
 
-    private static void FindAnyFormat(BinarySource src, ref FoundInfo? fmt, ref IDetector? detector)
+    private static void FindAnyFormat(BinarySource src, out object? found)
     {
+        found = null;
+
         foreach (var handler in FormatList.All)
         {
             try
             {
-                handler.Detect(src, ref fmt);
+                handler.Detect(src, ref found);
             }
             catch
             {
             }
 
-            if (fmt != null)
+            if (found != null)
             {
                 // Format found.
-                detector = handler;
 
-                Console.Write($"0x{fmt.StartPosition:X}");
-                if (fmt.HasSize)
-                    Console.Write($"..0x{fmt.StartPosition + fmt.Size:X}");
+                if (found is not IFoundPoint pt)
+                    throw new NotImplementedException();
+
+                Console.Write($"0x{pt.StartPosition:X}");
+
+                if (found is IFoundRange range)
+                    Console.Write($"..0x{range.End:X}");
+
                 Console.Write($": {handler.ID}");
+
+                if (found is ITextPreview textPreview)
+                {
+                    Console.Write("; '" + ProcessPreviewText(textPreview.Text) + "'");
+                }
+
                 Console.WriteLine();
 
                 break;
             }
         }
+    }
+
+    private static string ProcessPreviewText(string text)
+    {
+        var lim = 55;
+        var sb = new StringBuilder(lim + 3);
+        for (var i = 0; i < text.Length; i++)
+        {
+            if (i > lim)
+            {
+                sb.Append("...");
+                break;
+            }
+
+            switch (char.GetUnicodeCategory(text[i]))
+            {
+                case UnicodeCategory.LineSeparator:
+                    sb.Append(' ');
+                    break;
+                case UnicodeCategory.Control:
+                case UnicodeCategory.Surrogate:
+                    break;
+                default:
+                    sb.Append(text[i]);
+                    break;
+            }
+        }
+        return sb.ToString();
     }
 
     private static void ShowUsage()

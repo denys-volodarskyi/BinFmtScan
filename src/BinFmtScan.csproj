@@ -11,10 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SrcGen\SrcGen.csproj"
-						  OutputItemType="Analyzer"
-						  ReferenceOutputAssembly="false"
-						  />
+		<ProjectReference Include="..\SrcGen\SrcGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 </Project>

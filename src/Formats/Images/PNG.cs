@@ -4,13 +4,11 @@ internal class PNG : IDetector
 {
     public string ID => "PNG";
 
-    public Category Category => Category.Image;
-
     public string Extension => ".png";
 
     private static readonly byte[] Signature = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 
-    public void Detect(BinarySource src, ref FoundInfo? res)
+    public void Detect(BinarySource src, ref object? res)
     {
         var start = src.Position;
 
@@ -28,10 +26,19 @@ internal class PNG : IDetector
 
         var end = src.Position;
 
-        res = new FoundInfo
+        res = new FoundPNG
         {
             StartPosition = start,
             Size = end - start,
         };
     }
+}
+
+file class FoundPNG : IFoundRange, IHasFileExtension
+{
+    public long StartPosition { get; set; }
+
+    public long Size { get; set; }
+
+    public string Extension => ".png";
 }

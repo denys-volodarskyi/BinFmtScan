@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace BinFmtScan;
 
@@ -111,5 +112,47 @@ public unsafe sealed class BinarySource
             Position = pos;
 
         return equal;
+    }
+
+    [method: MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Is(string text, Encoding enc, bool peek = true)
+    {
+        var bytes = enc.GetBytes(text);
+        return Is(bytes, peek);
+    }
+
+    public string GetString(Encoding enc, bool peek)
+    {
+        var pos = Position;
+
+        int nulls = 0;
+        var bytes = new List<byte>();
+
+        while (true)
+        {
+            var bval = Stream.ReadByte();
+            if (bval < 0)
+                throw new NotImplementedException();
+
+            if (bval == 0)
+            {
+                if (enc.IsSingleByte)
+                    break;
+
+                nulls++;
+
+                if (nulls >= 2)
+                    break;
+            }
+
+            bytes.Add((byte)bval);
+        }
+
+        var str = enc.GetString(bytes.ToArray());
+
+        if (peek)
+            Position = pos;
+
+        return str;
     }
 }

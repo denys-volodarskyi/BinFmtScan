@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SrcGen;
 
@@ -10,14 +12,12 @@ public class FormatListSourceGenerator : ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
+        context.RegisterForSyntaxNotifications(() => new MySyntaxReceiver());
     }
 
-    public void Execute(GeneratorExecutionContext ctx)
+    public void Execute(GeneratorExecutionContext context)
     {
         var src = new StringBuilder();
-
-        var syms = ctx.Compilation.GetSymbolsWithName(predicate: x => true, cancellationToken: ctx.CancellationToken);
-        var fmts = syms.Where(s => s.Kind == SymbolKind.NamedType && s.ToString().Contains(".Formats."));
 
         src.AppendLine(
             """
@@ -29,16 +29,55 @@ public class FormatListSourceGenerator : ISourceGenerator
                 {
             """);
 
-        foreach (var fmt in fmts)
-            src.AppendLine($"      new {fmt}(),");
+        // Retrieve the syntax receiver
+        if (context.SyntaxReceiver is MySyntaxReceiver receiver)
+        {
+            // Get the compilation
+            var compilation = context.Compilation;
 
+            // Get the interface symbol
+            var interfaceSymbol = compilation.GetTypeByMetadataName("BinFmtScan.IDetector");
+            if (interfaceSymbol != null)
+            {
+                // Process each class declaration to check if it implements the specified interface
+                foreach (var classDeclaration in receiver.CandidateClassDeclarations)
+                {
+                    var model = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
+
+                    // Get the symbol for the class declaration
+                    var classSymbol = model.GetDeclaredSymbol(classDeclaration);
+
+                    if (classSymbol is INamedTypeSymbol namedTypeSymbol)
+                    {
+                        if (namedTypeSymbol.AllInterfaces.Contains(interfaceSymbol))
+                        {
+                            src.AppendLine($"      new {namedTypeSymbol}(),");
+                        }
+                    }
+                }
+            }
+        }
 
         src.AppendLine(
-        """
+"""
                 };
             }
             """);
 
-        ctx.AddSource("FileFormats.cs", src.ToString());
+        context.AddSource("FileFormats.cs", src.ToString());
+    }
+
+    // Syntax receiver to collect class declarations
+    private class MySyntaxReceiver : ISyntaxReceiver
+    {
+        public List<ClassDeclarationSyntax> CandidateClassDeclarations { get; } = new List<ClassDeclarationSyntax>();
+
+        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+        {
+            if (syntaxNode is ClassDeclarationSyntax classDeclaration)
+            {
+                CandidateClassDeclarations.Add(classDeclaration);
+            }
+        }
     }
 }
