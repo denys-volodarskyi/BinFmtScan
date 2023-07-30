@@ -10,4 +10,11 @@
 		<PublishAot>true</PublishAot>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\SrcGen\SrcGen.csproj"
+						  OutputItemType="Analyzer"
+						  ReferenceOutputAssembly="false"
+						  />
+	</ItemGroup>
+
 </Project>
