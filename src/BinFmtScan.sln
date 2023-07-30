@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.33920.267
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinFmtScan", "BinFmtScan.csproj", "{357E5C13-346D-4EE2-877A-F0AE104C4052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinFmtScan", "BinFmtScan.csproj", "{6A0FCCFD-6E85-469C-9B4D-5F8E64FDFAE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{357E5C13-346D-4EE2-877A-F0AE104C4052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{357E5C13-346D-4EE2-877A-F0AE104C4052}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{357E5C13-346D-4EE2-877A-F0AE104C4052}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{357E5C13-346D-4EE2-877A-F0AE104C4052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0FCCFD-6E85-469C-9B4D-5F8E64FDFAE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0FCCFD-6E85-469C-9B4D-5F8E64FDFAE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0FCCFD-6E85-469C-9B4D-5F8E64FDFAE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0FCCFD-6E85-469C-9B4D-5F8E64FDFAE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DA8D8B38-4958-498D-A747-D4851B54027F}
+		SolutionGuid = {BB0569EB-1D11-49BC-BCA2-7E2E09230BA1}
 	EndGlobalSection
 EndGlobal
