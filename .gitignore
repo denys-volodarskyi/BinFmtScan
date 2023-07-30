@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 /src/Properties/launchSettings.json
+
+/*.exe
