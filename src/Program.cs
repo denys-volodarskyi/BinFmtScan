@@ -19,13 +19,6 @@ internal class Program
 
         for (var i = 0; i < args.Length; i++)
         {
-            switch (args[i])
-            {
-                case "-e":
-                    extract = true;
-                    break;
-            }
-
             if (i == args.Length - 1)
                 path = args[i];
             else if (args[i] == "-x")
