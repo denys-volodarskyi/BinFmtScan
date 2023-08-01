@@ -102,10 +102,10 @@ internal class Program
             {
                 // Format found.
 
-                if (found is not IFoundPoint pt)
+                if (found is not IFoundPosition foundpos)
                     throw new NotImplementedException();
 
-                Console.Write($"0x{pt.StartPosition:X}");
+                Console.Write($"0x{foundpos.StartPosition:X}");
 
                 if (found is IFoundRange range)
                     Console.Write($"..0x{range.End:X}");

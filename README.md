@@ -2,46 +2,21 @@
 
 Scans input binary for known file formats.
 
+> Currently it's only **PNG**.
+
+# Command line options
+
+```
+-x: extract
+```
+
 # Adding new format
 
-- Add new class in the ``Formats`` folder.<br/><br/>
-  > Please use or create sub-folder for the right category to keep code clean.
-  >
-  > For example put **BMP**, **PNG**, **JPEG** formats into ``Images`` folder.
+Add new class in ``Formats\<category>``.
+> For example **PNG** is under ``Images`` category.
 
-- Inherit from ``IDetect``, set ``ID`` and ``Category``. 
+Implement ``IDetector`` interface to examine the given ``BinarySource`` stream.
 
-- Implement ``Detect``.<br/>
-  You get ``input`` to read/inspect input binary and ``fmt`` to set only if format detected.
+If some data found return either ``IFoundPosition`` when you don't know the size or ``IFoundRange`` when you know data start and end.
 
-- Optionally implement extraction logic.
-
-- Register format detector
-
-# Categories
-
-> Maybe use TAGS instead
-
-- Images
-- Sounds
-- Executables
-- Archives
-- File Systems
-
-# Detector
-
-It should find start of the format.
-
-Optionally it can find format size.
-
-# Complex / nested file formats
-
-# Notes
-
-- Should find CRC tables too.
-- YARA rules ?
-
-**BinaryInput** abstraction needed for:
-
-- Simple APIs for the format implementer.
-- Possible future performance optimizations reading the input.
+If data position range is known it can be extracted with ``-x`` option.

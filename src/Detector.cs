@@ -1,11 +1,11 @@
 ﻿namespace BinFmtScan;
 
-public interface IFoundPoint
+public interface IFoundPosition
 {
     long StartPosition { get; }
 }
 
-public interface IFoundRange : IFoundPoint
+public interface IFoundRange : IFoundPosition
 {
     long Size { get; }
     long End => StartPosition + Size;
