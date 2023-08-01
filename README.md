@@ -12,7 +12,7 @@ Scans input binary for known file formats.
 
 # Adding new format
 
-Add new class in ``Formats\<category>``.
+Add new class in ``Formats\<category>`` folder.
 > For example **PNG** is under ``Images`` category.
 
 Implement ``IDetector`` interface to examine the given ``BinarySource`` stream.
@@ -21,5 +21,5 @@ If some data found return either ``IFoundPosition`` when you don't know the size
 
 If data position range is known it can be extracted with ``-x`` option.
 
-> Added class is then added into ``FormatList`` by the source generator project.<br/>
+> New class is then added into ``FormatList`` by the source generator project.<br/>
 > Just rebuild and new format should be in the format list.
