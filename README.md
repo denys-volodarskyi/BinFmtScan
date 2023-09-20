@@ -17,9 +17,16 @@ Add new class in ``Formats\<category>`` folder.
 
 Implement ``IDetector`` interface to examine the given ``BinarySource`` stream.
 
-If some data found return either ``IFoundPosition`` when you don't know the size or ``IFoundRange`` when you know data start and end.
+```csharp
+void Detect(BinarySource src, ref object? res);
+```
+If some data found, you should set result value to
+- either ``IFoundPosition`` when you don't know the size
+- or ``IFoundRange`` when you know data start and size
 
 If data position range is known it can be extracted with ``-x`` option.
 
-> New class is then added into ``FormatList`` by the source generator project.<br/>
-> Just rebuild and new format should be in the format list.
+# Compilation
+
+When you build the project, [source generator](SrcGen/FormatListSourceGenerator.cs) will create ``FormatList``
+and your format will be registered automatically.
