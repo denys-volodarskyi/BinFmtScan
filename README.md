@@ -2,8 +2,6 @@
 
 Scans input binary for known file formats.
 
-> Currently it's only **PNG**.
-
 # Command line options
 
 ```
