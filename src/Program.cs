@@ -111,12 +111,22 @@ internal class Program
     private static void FindAnyFormat(BinarySource src, out object? found)
     {
         found = null;
+        
+        var src_start = src.Position;
+        var src_end = src.Length;
 
         foreach (var fmt in FormatList.All)
         {
             try
             {
                 fmt.Detector.Detect(src, ref found);
+
+                if (found is IFoundRange range && range.StartPosition == src_start && range.End == src_end)
+                {
+                    // Found range occupies whole source range.
+                    // Ignore it.
+                    found = null;
+                }
             }
             catch
             {
