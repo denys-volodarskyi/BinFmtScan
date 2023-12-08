@@ -22,7 +22,7 @@ internal class Program
             if (args[i] == "-x")
                 extract = true;
             else if (args[i] == "-fmts")
-                DisplayFormatsAvailable();
+                DisplayRegisteredFormats();
             else if (i == args.Length - 1)
                 path = args[i];
             else
@@ -49,19 +49,19 @@ internal class Program
         Scan(src, out_dir, extract);
     }
 
-    private static void DisplayFormatsAvailable()
+    private static void DisplayRegisteredFormats()
     {
         if (FormatList.All.Count == 0)
         {
-            Console.WriteLine("There are no formats installed.");
+            Console.WriteLine("There are no registered formats.");
             return;
         }
 
-        Console.WriteLine("Formats available:");
+        Console.WriteLine("Registered formats:");
 
         foreach (var fmt in FormatList.All)
         {
-            Console.WriteLine(fmt.ID);
+            Console.WriteLine($"- {fmt.ID}");
         }
     }
 
@@ -112,11 +112,11 @@ internal class Program
     {
         found = null;
 
-        foreach (var handler in FormatList.All)
+        foreach (var fmt in FormatList.All)
         {
             try
             {
-                handler.Detect(src, ref found);
+                fmt.Detector.Detect(src, ref found);
             }
             catch
             {
@@ -134,7 +134,7 @@ internal class Program
                 if (found is IFoundRange range)
                     Console.Write($"..0x{range.End:X}");
 
-                Console.Write($": {handler.ID}");
+                Console.Write($": {fmt.ID}");
 
                 if (found is ITextPreview textPreview)
                 {
@@ -198,7 +198,8 @@ internal class Program
             Usage: {AppDomain.CurrentDomain.FriendlyName} [options] filename
 
             Options:
-              -x: extract
+              -x:    extract
+              -fmts: display registered formats
             """);
     }
 }

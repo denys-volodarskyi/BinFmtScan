@@ -4,10 +4,6 @@ namespace BinFmtScan.Formats.Strings;
 
 internal class URL : IDetector
 {
-    public string ID => "URL";
-
-    public string Extension => "";
-
     public void Detect(BinarySource src, ref object? res)
     {
         var start = src.Position;

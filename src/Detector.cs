@@ -23,6 +23,5 @@ public interface ITextPreview
 
 internal interface IDetector
 {
-    string ID { get; }
     void Detect(BinarySource src, ref object? res);
 }

@@ -22,9 +22,15 @@ public class FormatListSourceGenerator : ISourceGenerator
             """
             namespace BinFmtScan;
 
+            internal struct FormatInfo
+            {
+                public string ID;
+                public IDetector Detector;
+            };
+
             internal static partial class FormatList
             {
-                internal static List<IDetector> All =
+                internal static List<FormatInfo> All =
                 [
             """);
 
@@ -50,7 +56,17 @@ public class FormatListSourceGenerator : ISourceGenerator
                     {
                         if (namedTypeSymbol.AllInterfaces.Contains(interfaceSymbol))
                         {
-                            src.AppendLine($"      new {namedTypeSymbol}(),");
+                            var id = namedTypeSymbol.ToString().Replace("BinFmtScan.", "");
+                            var detector_class = namedTypeSymbol.ToString().Replace("BinFmtScan.", "");
+
+                            src.AppendLine(
+                                $$"""
+                                      new FormatInfo
+                                      {
+                                          ID = "{{id}}",
+                                          Detector = new {{detector_class}}(),
+                                      },
+                                """);
                         }
                     }
                 }
