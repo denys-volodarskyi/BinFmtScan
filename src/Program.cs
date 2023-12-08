@@ -19,17 +19,25 @@ internal class Program
 
         for (var i = 0; i < args.Length; i++)
         {
-            if (i == args.Length - 1)
-                path = args[i];
-            else if (args[i] == "-x")
+            if (args[i] == "-x")
                 extract = true;
+            else if (args[i] == "-fmts")
+                DisplayFormatsAvailable();
+            else if (i == args.Length - 1)
+                path = args[i];
             else
                 Console.WriteLine($"Unknown switch: {args[i]}");
         }
 
-
-        if (string.IsNullOrEmpty(path) | !File.Exists(path))
+        if (string.IsNullOrEmpty(path))
         {
+            // No file was provided to scan.
+            return;
+        }
+
+        if (!File.Exists(path))
+        {
+            // Given path does not exist.
             Console.WriteLine("Invalid source path");
             return;
         }
@@ -39,6 +47,22 @@ internal class Program
         using var stream = File.OpenRead(path);
         var src = new BinarySource(stream);
         Scan(src, out_dir, extract);
+    }
+
+    private static void DisplayFormatsAvailable()
+    {
+        if (FormatList.All.Count == 0)
+        {
+            Console.WriteLine("There are no formats installed.");
+            return;
+        }
+
+        Console.WriteLine("Formats available:");
+
+        foreach (var fmt in FormatList.All)
+        {
+            Console.WriteLine(fmt.ID);
+        }
     }
 
     private static void Scan(BinarySource src, string out_dir, bool extract = false)

@@ -7,7 +7,8 @@ Scans input binary for known file formats.
 # Command line options
 
 ```
--x: extract
+-x:     extract
+-fmts:  list registered formats
 ```
 
 # Adding new format
