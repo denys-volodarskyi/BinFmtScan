@@ -129,14 +129,22 @@ internal class Program
                 if (found is not IFoundPosition foundpos)
                     throw new NotImplementedException();
 
+                // Display position or range.
+
                 Console.Write($"0x{foundpos.StartPosition:X}");
 
                 if (found is IFoundRange range)
+                {
                     Console.Write($"..0x{range.End:X}");
+                }
 
                 Console.Write($": {fmt.ID}");
 
-                if (found is ITextPreview textPreview)
+                if (found is IComment comment)
+                {
+                    Console.Write("; " + comment.Comment);
+                }
+                else if (found is ITextPreview textPreview)
                 {
                     Console.Write("; '" + ProcessPreviewText(textPreview.Text) + "'");
                 }

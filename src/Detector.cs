@@ -21,6 +21,11 @@ public interface ITextPreview
     string Text { get; }
 }
 
+public interface IComment
+{
+    string Comment { get; }
+}
+
 internal interface IDetector
 {
     void Detect(BinarySource src, ref object? res);

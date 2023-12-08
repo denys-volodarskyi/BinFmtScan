@@ -34,7 +34,22 @@ internal class PNG : IDetector
                 Size = src.Position - start,
             };
         }
+        else
+        {
+            // Header only.
+            res = new PNGHeaderLocation
+            {
+                StartPosition = start,
+                Comment = "PNG Header"
+            };
+        }
     }
+}
+
+file class PNGHeaderLocation : IFoundPosition, IComment
+{
+    public long StartPosition { get; init; }
+    public string Comment { get; init; } = "";
 }
 
 file class FoundPNG : IFoundRange, IHasFileExtension
