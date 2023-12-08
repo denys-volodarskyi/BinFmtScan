@@ -11,22 +11,29 @@ internal class PNG : IDetector
         if (!src.Is(Signature, peek: false))
             return;
 
+        long size_of_all_chunks = 0;
+
         // Chunks
         while (true)
         {
             var chunk_size = src.ReadBE<int>();
-            src.Position += 4 + chunk_size + 4; // name, data, crc
+            size_of_all_chunks += chunk_size;
+
+            src.Position += 4 + chunk_size + 4; // skip name, data, crc
+
             if (chunk_size == 0)
                 break;
         }
 
-        var end = src.Position;
-
-        res = new FoundPNG
+        if (size_of_all_chunks != 0)
         {
-            StartPosition = start,
-            Size = end - start,
-        };
+            // Return result if there is some chunk data, not just PNG header.
+            res = new FoundPNG
+            {
+                StartPosition = start,
+                Size = src.Position - start,
+            };
+        }
     }
 }
 
