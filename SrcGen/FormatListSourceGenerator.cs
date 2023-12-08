@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
@@ -23,10 +22,10 @@ public class FormatListSourceGenerator : ISourceGenerator
             """
             namespace BinFmtScan;
 
-            internal static class FormatList
+            internal static partial class FormatList
             {
-                internal static List<IDetector> All = new()
-                {
+                internal static List<IDetector> All =
+                [
             """);
 
         // Retrieve the syntax receiver
@@ -60,7 +59,7 @@ public class FormatListSourceGenerator : ISourceGenerator
 
         src.AppendLine(
             """
-                };
+                ];
             }
             """);
 
@@ -70,7 +69,7 @@ public class FormatListSourceGenerator : ISourceGenerator
     // Syntax receiver to collect class declarations
     private class MySyntaxReceiver : ISyntaxReceiver
     {
-        public List<ClassDeclarationSyntax> CandidateClassDeclarations { get; } = new List<ClassDeclarationSyntax>();
+        public List<ClassDeclarationSyntax> CandidateClassDeclarations { get; } = [];
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
